@@ -160,6 +160,7 @@ def create_contexts_target(corpus, window_size=1):
 
     return np.array(contexts), np.array(target)
 
+
 def clip_grads(grads, max_norm):
     total_norm = 0
     for grad in grads:
