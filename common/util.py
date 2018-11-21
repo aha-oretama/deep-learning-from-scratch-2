@@ -1,9 +1,9 @@
 # coding: utf-8
 import sys
-sys.path.append('..')
 import os
 import numpy as np
 
+sys.path.append('..')
 
 def preprocess(text):
     text = text.lower()

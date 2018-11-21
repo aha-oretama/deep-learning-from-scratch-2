@@ -1,11 +1,11 @@
 # coding: utf-8
 import sys
-sys.path.append('..')
 import time
 import matplotlib.pyplot as plt
 import numpy as np
 from common.util import clip_grads
 
+sys.path.append('..')
 
 class Trainer:
     def __init__(self, model, optimizer):
