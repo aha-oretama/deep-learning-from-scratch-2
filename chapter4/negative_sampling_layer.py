@@ -1,9 +1,10 @@
 import numpy as np
-from common.layers import Embedding
+from common.layers import Embedding, SigmoidWithLoss
 import collections
 
+
 class EmbeddingDot:
-    def __init__(self,W):
+    def __init__(self, W):
         self.embed = Embedding(W)
         self.params = self.embed.params
         self.grads = self.embed.grads
@@ -27,6 +28,7 @@ class EmbeddingDot:
         dh = dout * target_W
         return dh
 
+
 class UnigramSampler:
 
     def __init__(self, corpus, power, sample_size):
@@ -48,7 +50,7 @@ class UnigramSampler:
         self.word_p = np.power(self.word_p, power)
         self.word_p /= np.sum(self.word_p)
 
-    def get_nagative_sample(self,target):
+    def get_nagative_sample(self, target):
 
         batch_size = target.shape[0]
 
@@ -59,6 +61,46 @@ class UnigramSampler:
             target_idx = target[i]
             p[target_idx] = 0
             p /= p.sum()
-            negative_sample[i, :] = np.random.choice(self.vocab_size,size=self.sample_size,replace=False, p=p)
+            negative_sample[i, :] = np.random.choice(self.vocab_size, size=self.sample_size, replace=False, p=p)
 
         return negative_sample
+
+
+class NegativeSamplingLoss:
+    def __init__(self, W, corppus, power=0.75, sample_size=2):
+        self.sample_size = sample_size
+        self.sampler = UnigramSampler(corppus, power, sample_size)
+        # 正例(+1)と負例(sample_size)
+        self.loss_layer = [SigmoidWithLoss() for _ in range(sample_size + 1)]
+        self.embed_dot_layers = [EmbeddingDot(W) for _ in range(sample_size + 1)]
+
+        self.params = []
+        self.grads = []
+        for layer in self.embed_dot_layers:
+            self.params += layer.params
+            self.grads += layer.grads
+
+    def forward(self, h, target):
+        batch_size = target.shape[0]
+        negative_sample = self.sampler.get_nagative_sample(target)
+
+        # 正例のforward
+        score = self.embed_dot_layers[0].forward(h, target)
+        correct_label = np.ones(batch_size, dtype=np.int32)
+        loss = self.loss_layer[0].forward(score, correct_label)
+
+        negative_label = np.zeros(batch_size, dtype=np.int32)
+        for i in range(self.sample_size):
+            negative_target = negative_sample[:, i]
+            score = self.embed_dot_layers[i + 1].forward(h, negative_target)
+            loss += self.loss_layer[i + 1].forward(score, negative_label)
+
+        return loss
+
+    def backward(self, dout=1):
+        dh = 0
+        for l0, l1 in zip(self.loss_layer, self.embed_dot_layers):
+            dscore = l0.backward(dout)
+            dh += l1.backward(dscore)
+
+        return dh
