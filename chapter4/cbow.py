@@ -18,7 +18,7 @@ class CBOW:
 
         self.in_layers = []
         for i in range(window_size):
-            self.in_layers += Embedding(W_in)
+            self.in_layers.append(Embedding(W_in))
 
         self.ns_loss = NegativeSamplingLoss(W_out, corpus, power=0.75, sample_size=5)
 
