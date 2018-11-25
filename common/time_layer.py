@@ -212,4 +212,3 @@ class TimeSoftmaxWithLoss:
         dx = dx.reshape((N, T, V))
 
         return dx
-
