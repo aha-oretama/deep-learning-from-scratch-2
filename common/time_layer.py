@@ -31,7 +31,7 @@ class RNN:
         # b は N×1の行列で、forward ではrepeatedしているため
         db = np.sum(dt, axis=0)
         dWh = np.dot(h_prev.T, dt)
-        dh_prev = (dt, Wh.T)
+        dh_prev = np.dot(dt, Wh.T)
         dWx = np.dot(x.T, dt)
         dx = np.dot(dt, Wx.T)
 
@@ -70,7 +70,7 @@ class TimeRNN:
             self.h = np.zeros((N, H), dtype='f')
 
         for t in range(T):
-            layer = RNN(Wx, Wh, b)
+            layer = RNN(*self.params)
             self.h = layer.forward(xs[:, t, :], self.h)
             hs[:, t, :] = self.h
             self.layers.append(layer)
@@ -92,7 +92,7 @@ class TimeRNN:
             dxs[:, t, :] = dx
 
             for i, grad in enumerate(layer.grads):
-                grads[i] += grads
+                grads[i] += grad
 
         for i, grad in enumerate(grads):
             self.grads[i][...] = grad
@@ -130,7 +130,7 @@ class TimeEmbedding:
         for t in range(T):
             layer = self.layers[t]
             layer.backward(dout[:, t, :])
-            grad = layer.grads[0]
+            grad += layer.grads[0]
 
         self.grads[0][...] = grad
         return None
@@ -138,7 +138,7 @@ class TimeEmbedding:
 
 class TimeAffine:
 
-    def __init(self, W, b):
+    def __init__(self, W, b):
         self.params = [W, b]
         self.grads = [np.zeros_like(W), np.zeros_like(b)]
         self.x = None

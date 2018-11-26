@@ -43,7 +43,7 @@ class SimpleRnnlm:
 
     def backward(self, dout=1):
         dout = self.loss_layer.backward(dout)
-        for layer in self.layers:
+        for layer in reversed(self.layers):
             dout = layer.backward(dout)
 
         return dout
