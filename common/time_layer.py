@@ -27,7 +27,7 @@ class RNN:
         Wx, Wh, b = self.params
         x, h_prev, h_next = self.cache
 
-        dt = dh_next * (1 - dh_next ** 2)
+        dt = dh_next * (1 - h_next ** 2)
         # b は N×1の行列で、forward ではrepeatedしているため
         db = np.sum(dt, axis=0)
         dWh = np.dot(h_prev.T, dt)
