@@ -165,8 +165,8 @@ class TimeAffine:
         dx = np.dot(dout, W.T)
         dx = dx.reshape(*x.shape)
 
-        self.params[0][...] = dW
-        self.params[1][...] = db
+        self.grads[0][...] = dW
+        self.grads[1][...] = db
 
         return dx
 
