@@ -215,7 +215,7 @@ class TimeSoftmaxWithLoss:
 
 
 class LSTM:
-    def __init__(self, Wx, Wh, b) -> None:
+    def __init__(self, Wx, Wh, b):
         '''
         Parameters
         ----------
@@ -244,7 +244,7 @@ class LSTM:
         i = sigmoid(i)
         o = sigmoid(o)
 
-        c_next = c_prev * f + g * i
+        c_next = f * c_prev + g * i
         h_next = o * np.tanh(c_next)
 
         self.cache = (x, h_prev, c_prev, i, f, g, o, c_next)
