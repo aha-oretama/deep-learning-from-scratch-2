@@ -1,7 +1,6 @@
 # coding: utf-8
-import sys
-import numpy as np
 import pickle
+import sys
 
 sys.path.append('..')
 
@@ -9,7 +8,6 @@ from common.time_layer import *
 
 
 class Rnnlm:
-
     def __init__(self, vocab_size=10000, wordvec_size=100, hidden_size=100):
         V, D, H = vocab_size, wordvec_size, hidden_size
         rn = np.random.randn
@@ -63,4 +61,3 @@ class Rnnlm:
     def load_params(self, file_name='Rnnlm.pkl'):
         with open(file_name, 'rb') as f:
             self.params = pickle.load(f)
-

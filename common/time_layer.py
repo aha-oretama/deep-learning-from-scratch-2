@@ -329,7 +329,7 @@ class TimeLSTM:
         grads = [0, 0, 0]
         for t in reversed(range(T)):
             layer = self.layers[t]
-            dx, dh, dc = layer.backward(dh, dc)
+            dx, dh, dc = layer.backward(dhs[:, t, :] + dh, dc)
             dxs[:, t, :] = dx
             for i, grad in enumerate(layer.grads):
                 grads[i] += grad
