@@ -41,4 +41,4 @@ for epoch in range(max_epoch):
     acc = float(correct_num) / len(x_test)
     acc_list.append(acc)
 
-    print('val acc %.3f%%' & (acc * 100))
+    print('val acc %.3f%%' % (acc * 100))
