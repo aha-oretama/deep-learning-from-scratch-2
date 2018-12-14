@@ -23,7 +23,8 @@ class Seq2seq:
         self.grads = self.encoder.grads + self.decoder.grads
 
     def forward(self, xs, ts):
-        decoder_xs, decoder_ts = ts[:, :-1], ts[:, 1:]
+        decoder_xs = ts[:, :-1]
+        decoder_ts = ts[:, 1:]
 
         h = self.encoder.forward(xs)
         score = self.decoder.forward(decoder_xs, h)
