@@ -10,7 +10,7 @@ from dataset import sequence
 from common.optimizer import Adam
 from common.trainer import Trainer
 from common.util import eval_seq2seq
-from chapter7.Seq2seq import Seq2seq
+from chapter7.PeekySeq2seq import PeekySeq2seq
 
 # データセットの読み込み
 (x_train, t_train), (x_test, t_test) = sequence.load_data('addition.txt')
@@ -25,7 +25,7 @@ max_epoch = 25
 max_grad = 5.0
 
 # モデル、オプティマイザ、トレーナの生成
-model = Seq2seq(vocab_size, wordvec_size, hidden_size)
+model = PeekySeq2seq(vocab_size, wordvec_size, hidden_size)
 optimizer = Adam()
 trainer = Trainer(model, optimizer)
 
