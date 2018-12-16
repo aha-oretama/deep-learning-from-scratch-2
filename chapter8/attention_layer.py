@@ -96,7 +96,7 @@ class TimeAttention:
         self.attention_weights = None
 
     def forward(self, hs_enc, hs_dec):
-        N, T, H = hs_enc.shape
+        N, T, H = hs_dec.shape
         out = np.empty_like(hs_dec)
         self.layers = []
         self.attention_weights = []
@@ -116,7 +116,7 @@ class TimeAttention:
 
         for t in range(T):
             layer = self.layers[t]
-            dhs, dh = layer.backward(dout)
+            dhs, dh = layer.backward(dout[:, t, :])
             dhs_enc += dhs
             dhs_dec[:, t, :] = dh
 
